@@ -5,7 +5,8 @@ Created on 24/10/2011
 '''
 
 import datetime
-#from datetime import time
+from time import mktime
+from datetime import time
 #from datetime import datetime
 
 class Day(object):
@@ -14,23 +15,29 @@ class Day(object):
     '''
 
 
-    def __init__(self, date = date.today(), pause=30, start_time = time(8, 20)):
+    def __init__(self, date=None, pause=30, startTime=None ):
         '''
         Constructor
         '''
-        self.date = date
+        if date == None:
+            self.date = datetime.date.today()
+        if startTime == None:
+            self.startTime = time(8, 20)
         self.pause = pause
-        self.start_time = start_time
         working_hours = 0
-        end_time = None
+        endEime = None
         
-    def set_stop(self, end_time = datetime.datetime.now()):
-        self.end_time = end_time
+    def setStop(self, endTime = datetime.datetime.now()):
+        self.endTime = endTime
         
-    def count_time(self):
-        hours = self.end_time.hour - self.start_time.hour
-        minutes = self.end_time.minute - self.start_time.minute
-        return time(hours, minutes)
+    def countTime(self):
+        
+#        self.end_time.
+        startTimeStamp = self.startTime.hour * 60 + self.startTime.minute
+        endTimeStamp = self.endTime.hour * 60 + self.endTime.minute
+        workedMinutes = endTimeStamp - startTimeStamp
+        
+        return time(workedMinutes / 60, workedMinutes % 60)
         
     
         
