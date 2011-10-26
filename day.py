@@ -9,6 +9,23 @@ from time import mktime
 from datetime import time
 #from datetime import datetime
 
+def roundTime(timeToRound):
+    u"""rounds time five minuter up or down"""
+    roundedMinute = 0
+    roundedHour = timeToRound.hour
+    
+    if timeToRound.minute % 10 <= 5:
+       roundedMiunte = timeToRound.minute / 10
+       
+    if timeToRound.minute % 10 > 5:
+        roundedMinute = (timeToRound.minute / 10 + 1) * 10
+        if roundedMinute > 50:
+            roundedHour += 1
+            roundedMinute = 0
+       
+    return time(roundedHour, roundedMinute)
+    
+
 class Day(object):
     '''
     classdocs
