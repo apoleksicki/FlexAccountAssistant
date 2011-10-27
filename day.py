@@ -15,7 +15,7 @@ def roundTime(timeToRound):
     roundedHour = timeToRound.hour
     
     if timeToRound.minute % 10 <= 5:
-       roundedMiunte = timeToRound.minute / 10
+       roundedMinute = timeToRound.minute / 10 * 10
        
     if timeToRound.minute % 10 > 5:
         roundedMinute = (timeToRound.minute / 10 + 1) * 10
@@ -52,7 +52,7 @@ class Day(object):
 #        self.end_time.
         startTimeStamp = self.startTime.hour * 60 + self.startTime.minute
         endTimeStamp = self.endTime.hour * 60 + self.endTime.minute
-        workedMinutes = endTimeStamp - startTimeStamp
+        workedMinutes = endTimeStamp - startTimeStamp - self.pause
         
         return time(workedMinutes / 60, workedMinutes % 60)
         
