@@ -36,6 +36,7 @@ class Day(object):
         '''
         Constructor
         '''
+        object.__init__()
         if date == None:
             self.date = datetime.date.today()
         if startTime == None:
