@@ -50,12 +50,42 @@ class Day(object):
         
     def countTime(self):
         
-#        self.end_time.
+
         startTimeStamp = self.startTime.hour * 60 + self.startTime.minute
-        endTimeStamp = self.endTime.hour * 60 + self.endTime.minute
+        try:
+            endTimeStamp = self.endTime.hour * 60 + self.endTime.minute
+        except:
+            raise AttributeError("setStop has not been called")
+            
         workedMinutes = endTimeStamp - startTimeStamp - self.pause
         
         return time(workedMinutes / 60, workedMinutes % 60)
         
+class DayService(object):
+    u"""Class that provides basic interface for operations on the Day objects""" 
     
+    def getTimeOnDay(self, day):
+        pass
+    
+    def getBalance(self):  
+        pass
+    def addDay(self, day):
+        pass
+    
+class DictionaryTableDayService(DayService):
+    u"""Basic implementation of DayService. Works on a dictionary"""
+    def __init__(self, initialBalance=0):
+        self.days = {}
+        self.balance = initialBalance
+        pass
+    def addDay(self, day):
+        if self.days.get(day.date) != None:
+            self.balance -= self.days[day.date].countTime()
+        self.balance +=day.countTime()
+        
+
+        
+        
+        
+     
         

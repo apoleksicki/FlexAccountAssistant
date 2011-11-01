@@ -43,5 +43,14 @@ class TestDay(unittest.TestCase):
         d.setStop(time(16, 20))
         expected = time(8, 0)
         self.assertEqual(d.countTime(), expected) 
+    
+    def testNoEndTimeSet(self):
+        d = Day(pause = 0)
+        expected = time(8, 0)
+        try:
+            d.countTime()
+        except AttributeError:
+            pass
+        
         
    
