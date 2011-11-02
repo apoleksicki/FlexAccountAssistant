@@ -7,7 +7,7 @@ from datetime import time
 import unittest
 
 from flexaccounassistent import day
-from flexaccounassistent.day import Day
+from flexaccounassistent.day import Day, timeToMinutes
 
 
 
@@ -36,13 +36,13 @@ class TestDay(unittest.TestCase):
         d = Day()
         d.setStop(time(16, 20))
         expected = time(7, 30)
-        self.assertEqual(d.countTime(), expected) 
+        self.assertEqual(d.countTime(), timeToMinutes(expected)) 
         
     def testCountTimeNoPause(self):
         d = Day(pause = 0)
         d.setStop(time(16, 20))
         expected = time(8, 0)
-        self.assertEqual(d.countTime(), expected) 
+        self.assertEqual(d.countTime(), timeToMinutes(expected)) 
     
     def testNoEndTimeSet(self):
         d = Day(pause = 0)
@@ -51,6 +51,12 @@ class TestDay(unittest.TestCase):
             d.countTime()
         except AttributeError:
             pass
+    
+    def testWithStartTime(self):
+        d = Day(startTime = time(8, 0))
+        d.setStop(time(16, 00))
+        expected = time (7, 30)
+        self.assertEqual(d.countTime(), timeToMinutes(expected)) 
         
         
    

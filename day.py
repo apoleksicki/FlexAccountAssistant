@@ -24,7 +24,9 @@ def roundTime(timeToRound):
             roundedMinute = 0
        
     return time(roundedHour, roundedMinute)
-    
+  
+def timeToMinutes(t):
+    return t.hour * 60 + t.minute   
 
 class Day(object):
     '''
@@ -41,6 +43,8 @@ class Day(object):
             self.date = datetime.date.today()
         if startTime == None:
             self.startTime = time(8, 20)
+        else:
+            self.startTime = startTime
         self.pause = pause
         working_hours = 0
         endEime = None
@@ -51,15 +55,15 @@ class Day(object):
     def countTime(self):
         
 
-        startTimeStamp = self.startTime.hour * 60 + self.startTime.minute
+        startTimeStamp = timeToMinutes(self.startTime)
         try:
-            endTimeStamp = self.endTime.hour * 60 + self.endTime.minute
+            endTimeStamp = timeToMinutes(self.endTime)
         except:
             raise AttributeError("setStop has not been called")
             
         workedMinutes = endTimeStamp - startTimeStamp - self.pause
         
-        return time(workedMinutes / 60, workedMinutes % 60)
+        return workedMinutes
         
 class DayService(object):
     u"""Class that provides basic interface for operations on the Day objects""" 
@@ -70,20 +74,42 @@ class DayService(object):
     def getBalance(self):  
         pass
     def addDay(self, day):
-        pass
+        pass  
     
-class DictionaryTableDayService(DayService):
+class DictionaryDayService(DayService):
     u"""Basic implementation of DayService. Works on a dictionary"""
     def __init__(self, initialBalance=0):
-        self.days = {}
-        self.balance = initialBalance
+        DayService.__init__(self)
+        self.__days = {}
+        self.initialBalance= initialBalance
+        self.balance = 0
+        
+    def addDay(self, day):
+        if self.__days.get(day.date) != None:
+            self.balance -= self.__days[day.date].countTime()
+        self.balance +=day.countTime()
+    
+    def getBalance(self):
+        sumBalance = self.initialBalance
+        for v in self.__days.values():
+            sumBalance += v.countTime()
+        return self.initialBalance
+        
+        
+        
+        
+class DayRepository(object):
+    u"""Interface for day repository"""
+    def getTimeOnDay(self, day):
+        pass
+    
+    def getBalance(self):  
         pass
     def addDay(self, day):
-        if self.days.get(day.date) != None:
-            self.balance -= self.days[day.date].countTime()
-        self.balance +=day.countTime()
-        
-
+        pass  
+    
+    
+    
         
         
         
