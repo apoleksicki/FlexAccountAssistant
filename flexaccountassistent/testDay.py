@@ -5,9 +5,12 @@ Created on 27/10/2011
 '''
 from datetime import time
 import unittest
+from flexaccountassistent import day
+from flexaccountassistent.day import Day, timeToMinutes, DictionaryDayService
+import datetime
 
-from flexaccounassistent import day
-from flexaccounassistent.day import Day, timeToMinutes
+#from flexaccounassistent import day
+#from flexaccounassistent.day import Day, timeToMinutes
 
 
 
@@ -32,20 +35,25 @@ class TestRoundTime(unittest.TestCase):
         self.assertEqual(day.roundTime(t).minute, expected.minute)
         
 class TestDay(unittest.TestCase):
+    monday = datetime.date(2011, 11, 07)
+#    def __init__(self):
+#        unittest.TestCase.__init__(self)
+#        self.monday = datetime.date(2011, 11, 07) #A Monday
+        
     def testCountTime(self):
-        d = Day()
+        d = Day(date = TestDay.monday)
         d.setStop(time(16, 20))
         expected = time(7, 30)
         self.assertEqual(d.countTime(), timeToMinutes(expected)) 
         
     def testCountTimeNoPause(self):
-        d = Day(pause = 0)
+        d = Day(date = TestDay.monday, pause = 0)
         d.setStop(time(16, 20))
         expected = time(8, 0)
         self.assertEqual(d.countTime(), timeToMinutes(expected)) 
     
     def testNoEndTimeSet(self):
-        d = Day(pause = 0)
+        d = Day(date = TestDay.monday, pause = 0)
         expected = time(8, 0)
         try:
             d.countTime()
@@ -53,10 +61,27 @@ class TestDay(unittest.TestCase):
             pass
     
     def testWithStartTime(self):
-        d = Day(startTime = time(8, 0))
+        d = Day(date = TestDay.monday, startTime = time(8, 0))
         d.setStop(time(16, 00))
         expected = time (7, 30)
         self.assertEqual(d.countTime(), timeToMinutes(expected)) 
+        
+    def testTypeNormal(self):
+        d = Day(TestDay.monday)
+        self.assertEqual(d.workingMinutes, Day.NORMAL_HOURS * Day.MINUTES_IN_HOUR)
+        
+class TestDayDictionaryService(unittest.TestCase):
+    
+    def testInint(self):
+        dictionaryService = DictionaryDayService(600)
+        self.assertEqual(dictionaryService.getBalance(), 600)
+        
+    def testOneDay(self):
+        dictionaryService = DictionaryDayService(600)
+        d = Day(date = TestDay.monday)
+        d.setStop(time(17, 20))
+        dictionaryService.addDay(d)
+        self.assertEqual(dictionaryService.getBalance(), 660)
         
         
    

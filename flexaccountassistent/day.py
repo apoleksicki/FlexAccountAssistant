@@ -5,9 +5,7 @@ Created on 24/10/2011
 '''
 
 import datetime
-from time import mktime
 from datetime import time
-#from datetime import datetime
 
 def roundTime(timeToRound):
     u"""rounds time five minuter up or down"""
@@ -15,7 +13,7 @@ def roundTime(timeToRound):
     roundedHour = timeToRound.hour
     
     if timeToRound.minute % 10 <= 5:
-       roundedMinute = timeToRound.minute / 10 * 10
+        roundedMinute = timeToRound.minute / 10 * 10
        
     if timeToRound.minute % 10 > 5:
         roundedMinute = (timeToRound.minute / 10 + 1) * 10
@@ -30,24 +28,41 @@ def timeToMinutes(t):
 
 class Day(object):
     '''
-    classdocs
+    Class that represents a working day.
     '''
+    NORMAL = 0
+    HOLIDAY = 1 
+    MINUTES_IN_HOUR = 60
+    NORMAL_HOURS = 7.5
+    FRIDAY_HOURS = 7
 
-
-    def __init__(self, date=None, pause=30, startTime=None ):
+    def __init__(self, date=None, pause=30, startTime=None, dayType = NORMAL):
         '''
         Constructor
         '''
         object.__init__(self)
         if date == None:
             self.date = datetime.date.today()
+        else:
+            self.date = date
         if startTime == None:
             self.startTime = time(8, 20)
         else:
             self.startTime = startTime
+            
+        if dayType == Day.NORMAL:
+            if self.date.isoweekday() < 5:
+                self.workingMinutes = Day.NORMAL_HOURS * Day.MINUTES_IN_HOUR
+            elif self.date.isoweekday() == 5:
+                self.workingMinutes = Day.FRIDAY_HOURS * Day.MINUTES_IN_HOUR 
+            else:
+                self.workingMinutes = 0 
+        else:
+            self.workingMinutes = 0
+                
+             
         self.pause = pause
-        working_hours = 0
-        endEime = None
+        
         
     def setStop(self, endTime = datetime.datetime.now()):
         self.endTime = endTime
@@ -78,22 +93,24 @@ class DayService(object):
     
 class DictionaryDayService(DayService):
     u"""Basic implementation of DayService. Works on a dictionary"""
-    def __init__(self, initialBalance=0):
+    def __init__(self, initialBalanceInMinutes=0):
         DayService.__init__(self)
         self.__days = {}
-        self.initialBalance= initialBalance
-        self.balance = 0
+        self.balance = initialBalanceInMinutes
         
     def addDay(self, day):
         if self.__days.get(day.date) != None:
-            self.balance -= self.__days[day.date].countTime()
-        self.balance +=day.countTime()
+            self.balance -= self.__days.pop(day.date).countTime()
+            
+        self.__days[day.date] = day
+        self.balance += day.countTime() - day.workingMinutes
     
     def getBalance(self):
-        sumBalance = self.initialBalance
-        for v in self.__days.values():
-            sumBalance += v.countTime()
-        return self.initialBalance
+#        sumBalance = self.initialBalance
+#        for v in self.__days.values():
+#            sumBalance += v.countTime()
+#        return sumBalance
+        return self.balance
         
         
         
