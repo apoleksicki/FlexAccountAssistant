@@ -36,6 +36,8 @@ class TestRoundTime(unittest.TestCase):
         
 class TestDay(unittest.TestCase):
     monday = datetime.date(2011, 11, 07)
+    tuesday = datetime.date(2011, 11, 8)
+    friday = datetime.date(2011, 11, 11)
 #    def __init__(self):
 #        unittest.TestCase.__init__(self)
 #        self.monday = datetime.date(2011, 11, 07) #A Monday
@@ -54,7 +56,6 @@ class TestDay(unittest.TestCase):
     
     def testNoEndTimeSet(self):
         d = Day(date = TestDay.monday, pause = 0)
-        expected = time(8, 0)
         try:
             d.countTime()
         except AttributeError:
@@ -82,6 +83,42 @@ class TestDayDictionaryService(unittest.TestCase):
         d.setStop(time(17, 20))
         dictionaryService.addDay(d)
         self.assertEqual(dictionaryService.getBalance(), 660)
+        
+    def testTwoDays(self):
+        dictionaryService = DictionaryDayService(600)
+        d = Day(date = TestDay.monday)
+        d.setStop(time(17, 20))
+        dictionaryService.addDay(d)
+        d = Day(date = TestDay.tuesday)
+        d.setStop(time(17, 20))
+        dictionaryService.addDay(d)
+        self.assertEqual(dictionaryService.getBalance(), 720)
+        
+    def testThreeDaysWithFriday(self):
+        dictionaryService = DictionaryDayService(600)
+        d = Day(date = TestDay.monday)
+        d.setStop(time(17, 20))
+        dictionaryService.addDay(d)
+        d = Day(date = TestDay.tuesday)
+        d.setStop(time(17, 20))
+        dictionaryService.addDay(d)
+        d = Day(date = TestDay.friday)
+        d.setStop(time(17, 20))
+        dictionaryService.addDay(d)
+        self.assertEqual(dictionaryService.getBalance(), 810)
+        
+    def testThreeDaysWithMinus(self):
+        dictionaryService = DictionaryDayService(50)
+        d = Day(date = TestDay.monday)
+        d.setStop(time(14, 20))
+        dictionaryService.addDay(d)
+        d = Day(date = TestDay.tuesday)
+        d.setStop(time(14, 20))
+        dictionaryService.addDay(d)
+        d = Day(date = TestDay.friday)
+        d.setStop(time(14, 20))
+        dictionaryService.addDay(d)
+        self.assertEqual(dictionaryService.getBalance(), -280)
         
         
    

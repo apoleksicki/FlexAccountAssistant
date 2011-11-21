@@ -100,7 +100,7 @@ class DictionaryDayService(DayService):
         
     def addDay(self, day):
         if self.__days.get(day.date) != None:
-            self.balance -= self.__days.pop(day.date).countTime()
+            self.balance -= self.__days.pop(day.date).countTime() - day.workingMinutes
             
         self.__days[day.date] = day
         self.balance += day.countTime() - day.workingMinutes
