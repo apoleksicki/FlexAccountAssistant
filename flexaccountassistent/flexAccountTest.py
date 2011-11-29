@@ -5,8 +5,8 @@ Created on 31/10/2011
 '''
 
 import unittest
-from flexaccounassistent.flexAccount import FlexAccount
 from datetime import time
+from flexaccountassistent.flexAccount import FlexAccount
 
 
 
