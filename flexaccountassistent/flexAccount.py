@@ -7,7 +7,7 @@ Created on 27/10/2011
 from datetime import time
 
 class FlexAccount(object):
-    """Hold balane of the flex account"""
+    """Hold balance of the flex account"""
     
     def __init__(self, initialState = None):
         object.__init__(self)

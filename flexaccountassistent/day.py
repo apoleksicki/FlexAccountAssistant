@@ -93,24 +93,20 @@ class DayService(object):
     
 class DictionaryDayService(DayService):
     u"""Basic implementation of DayService. Works on a dictionary"""
-    def __init__(self, initialBalanceInMinutes=0):
+    def __init__(self, initialBalanceInMinutes=0, repository = None):
         DayService.__init__(self)
-        self.__days = {}
-        self.balance = initialBalanceInMinutes
+        
+        self.__dayRepository = repository 
+        if self.__dayRepository == None:
+            self.__dayRepository =   DayRepositoryTextFile(initialBalanceInMinutes)
+        
+        
         
     def addDay(self, day):
-        if self.__days.get(day.date) != None:
-            self.balance -= self.__days.pop(day.date).countTime() - day.workingMinutes
-            
-        self.__days[day.date] = day
-        self.balance += day.countTime() - day.workingMinutes
+        self.__dayRepository.addDay(day)
     
     def getBalance(self):
-#        sumBalance = self.initialBalance
-#        for v in self.__days.values():
-#            sumBalance += v.countTime()
-#        return sumBalance
-        return self.balance
+        return self.__dayRepository.getBalance()
         
         
         
@@ -124,7 +120,27 @@ class DayRepository(object):
         pass
     def addDay(self, day):
         pass  
+    def export(self):
+        pass
     
+class DayRepositoryTextFile (DayRepository):
+    u"""Implementation of DayRepository, that bases on a flat text file""" 
+    
+    def __init__(self, initialBalanceInMinutes=0, path = None):
+        DayRepository.__init__(self)
+        self.__days = {}
+        self.balance = initialBalanceInMinutes
+        
+    
+    def addDay(self, day):
+        if self.__days.get(day.date) != None:
+            self.balance -= self.__days.pop(day.date).countTime() - day.workingMinutes
+            
+        self.__days[day.date] = day
+        self.balance += day.countTime() - day.workingMinutes
+    
+    def getBalance(self):
+        return self.balance
     
     
         
