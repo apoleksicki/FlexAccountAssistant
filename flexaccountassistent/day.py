@@ -60,8 +60,9 @@ class Day(object):
         else:
             self.workingMinutes = 0
                 
-             
+        self._dayType = dayType     
         self.pause = pause
+        self.endTime = None
         
         
     def setStop(self, endTime = datetime.datetime.now()):
@@ -107,6 +108,8 @@ class DictionaryDayService(DayService):
     
     def getBalance(self):
         return self.__dayRepository.getBalance()
+    def close(self):
+        self.__dayRepository.close()
         
         
         
@@ -119,10 +122,32 @@ class DayRepository(object):
     def getBalance(self):  
         pass
     def addDay(self, day):
+        pass
+    def close(self):
         pass  
     def export(self):
         pass
     
+
+def dayParser(day):
+    u"""Parses a day object into comma separated line, which can be used later to recreate object"""
+    separator = ";"
+    toReturn = ""
+    toReturn += day.date.isoformat()
+    toReturn += separator
+    toReturn += "%d" % (day.pause)
+    toReturn += separator
+    toReturn += day.startTime.isoformat()
+    toReturn += separator
+    toReturn += "%d" % day._dayType
+    toReturn += separator
+    toReturn += day.endTime.isoformat()
+    toReturn + "\n"
+    
+    
+    return toReturn
+
+        
 class DayRepositoryTextFile (DayRepository):
     u"""Implementation of DayRepository, that bases on a flat text file""" 
     
@@ -142,6 +167,12 @@ class DayRepositoryTextFile (DayRepository):
     def getBalance(self):
         return self.balance
     
+    
+    def __export(self):
+        [dayParser(value) for value in self.__days.values()]
+        
+    def close(self):
+        self.__export()
     
         
         

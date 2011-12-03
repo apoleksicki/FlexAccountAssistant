@@ -120,5 +120,24 @@ class TestDayDictionaryService(unittest.TestCase):
         dictionaryService.addDay(d)
         self.assertEqual(dictionaryService.getBalance(), -280)
         
+class TestDayParser(unittest.TestCase):
+    def testDayParser(self):
+        toCompare = "2011-12-03;30;08:20:00;0;16:20:00"
+        d = Day(date = datetime.date(2011, 12, 03))
+        d.setStop(time(16, 20))
+        self.assertEqual(toCompare, day.dayParser(d))
+    
+    def testClose(self):
+        dictionaryService = DictionaryDayService(50)
+        d = Day(date = TestDay.monday)
+        d.setStop(time(14, 20))
+        dictionaryService.addDay(d)
+        d = Day(date = TestDay.tuesday)
+        d.setStop(time(14, 20))
+        dictionaryService.addDay(d)
+        d = Day(date = TestDay.friday)
+        d.setStop(time(14, 20))
+        dictionaryService.addDay(d)
+        dictionaryService.close()
         
    
