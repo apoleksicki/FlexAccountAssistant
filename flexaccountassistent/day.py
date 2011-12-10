@@ -60,8 +60,9 @@ class Day(object):
         else:
             self.workingMinutes = 0
                 
-             
+        self._dayType = dayType     
         self.pause = pause
+        self.endTime = None
         
         
     def setStop(self, endTime = datetime.datetime.now()):
@@ -93,24 +94,22 @@ class DayService(object):
     
 class DictionaryDayService(DayService):
     u"""Basic implementation of DayService. Works on a dictionary"""
-    def __init__(self, initialBalanceInMinutes=0):
+    def __init__(self, initialBalanceInMinutes=0, repository = None):
         DayService.__init__(self)
-        self.__days = {}
-        self.balance = initialBalanceInMinutes
+        
+        self.__dayRepository = repository 
+        if self.__dayRepository == None:
+            self.__dayRepository =   DayRepositoryTextFile(initialBalanceInMinutes)
+        
+        
         
     def addDay(self, day):
-        if self.__days.get(day.date) != None:
-            self.balance -= self.__days.pop(day.date).countTime() - day.workingMinutes
-            
-        self.__days[day.date] = day
-        self.balance += day.countTime() - day.workingMinutes
+        self.__dayRepository.addDay(day)
     
     def getBalance(self):
-#        sumBalance = self.initialBalance
-#        for v in self.__days.values():
-#            sumBalance += v.countTime()
-#        return sumBalance
-        return self.balance
+        return self.__dayRepository.getBalance()
+    def close(self):
+        self.__dayRepository.close()
         
         
         
@@ -123,9 +122,57 @@ class DayRepository(object):
     def getBalance(self):  
         pass
     def addDay(self, day):
+        pass
+    def close(self):
         pass  
+    def export(self):
+        pass
+    
+
+def dayParser(day):
+    u"""Parses a day object into comma separated line, which can be used later to recreate object"""
+    separator = ";"
+    toReturn = ""
+    toReturn += day.date.isoformat()
+    toReturn += separator
+    toReturn += "%d" % (day.pause)
+    toReturn += separator
+    toReturn += day.startTime.isoformat()
+    toReturn += separator
+    toReturn += "%d" % day._dayType
+    toReturn += separator
+    toReturn += day.endTime.isoformat()
+    toReturn + "\n"
     
     
+    return toReturn
+
+        
+class DayRepositoryTextFile (DayRepository):
+    u"""Implementation of DayRepository, that bases on a flat text file""" 
+    
+    def __init__(self, initialBalanceInMinutes=0, path = None):
+        DayRepository.__init__(self)
+        self.__days = {}
+        self.balance = initialBalanceInMinutes
+        
+    
+    def addDay(self, day):
+        if self.__days.get(day.date) != None:
+            self.balance -= self.__days.pop(day.date).countTime() - day.workingMinutes
+            
+        self.__days[day.date] = day
+        self.balance += day.countTime() - day.workingMinutes
+    
+    def getBalance(self):
+        return self.balance
+    
+    
+    def __export(self):
+        [dayParser(value) for value in self.__days.values()]
+        
+    def close(self):
+        self.__export()
     
         
         
