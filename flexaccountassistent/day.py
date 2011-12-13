@@ -147,6 +147,9 @@ def dayParser(day):
     
     return toReturn
 
+def createFileContent():
+    pass
+    
         
 class DayRepositoryTextFile (DayRepository):
     u"""Implementation of DayRepository, that bases on a flat text file""" 
@@ -167,12 +170,16 @@ class DayRepositoryTextFile (DayRepository):
     def getBalance(self):
         return self.balance
     
+    def __createContent(self):
+        return [dayParser(value) for value in self.__days.values()]
     
     def __export(self):
-        [dayParser(value) for value in self.__days.values()]
+        content = self.__createContent()
+        return content
+        
         
     def close(self):
-        self.__export()
+        return self.__export()
     
         
         

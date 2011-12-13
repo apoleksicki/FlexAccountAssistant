@@ -6,7 +6,8 @@ Created on 27/10/2011
 from datetime import time
 import unittest
 from flexaccountassistent import day
-from flexaccountassistent.day import Day, timeToMinutes, DictionaryDayService
+from flexaccountassistent.day import Day, timeToMinutes, DictionaryDayService,\
+    DayRepositoryTextFile, dayParser
 import datetime
 
 #from flexaccounassistent import day
@@ -139,5 +140,29 @@ class TestDayParser(unittest.TestCase):
         d.setStop(time(14, 20))
         dictionaryService.addDay(d)
         dictionaryService.close()
+
+class TestDayRepositoryTextFile(unittest.TestCase):
+    
+    def testCreateContent(self):
+        repo = createRepo()
+        expected = ['2011-11-08;30;08:20:00;0;14:20:00', '2011-11-07;30;08:20:00;0;14:20:00', '2011-11-11;30;08:20:00;0;14:20:00']
+        toCompare = repo._DayRepositoryTextFile__createContent()
+        self.assertEqual(expected, toCompare)
         
-   
+
+def createRepo():
+    repo = DayRepositoryTextFile()
+    d = Day(date = TestDay.monday)
+    d.setStop(time(14, 20))
+    repo.addDay(d)
+    d = Day(date = TestDay.tuesday)
+    d.setStop(time(14, 20))
+    repo.addDay(d)
+    d = Day(date = TestDay.friday)
+    d.setStop(time(14, 20))
+    repo.addDay(d)
+    
+    return repo
+
+def exportRepo(days):
+    return [dayParser(d) for d in days]
