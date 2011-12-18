@@ -123,7 +123,7 @@ class TestDayDictionaryService(unittest.TestCase):
         
 class TestDayParser(unittest.TestCase):
     def testDayParser(self):
-        toCompare = "2011-12-03;30;08:20:00;0;16:20:00"
+        toCompare = "2011-12-03;30;08:20:00;0;16:20:00\n"
         d = Day(date = datetime.date(2011, 12, 03))
         d.setStop(time(16, 20))
         self.assertEqual(toCompare, day.dayParser(d))
@@ -145,7 +145,7 @@ class TestDayRepositoryTextFile(unittest.TestCase):
     
     def testCreateContent(self):
         repo = createRepo()
-        expected = ['2011-11-08;30;08:20:00;0;14:20:00', '2011-11-07;30;08:20:00;0;14:20:00', '2011-11-11;30;08:20:00;0;14:20:00']
+        expected = ['2011-11-08;30;08:20:00;0;14:20:00\n', '2011-11-07;30;08:20:00;0;14:20:00\n', '2011-11-11;30;08:20:00;0;14:20:00\n']
         toCompare = repo._DayRepositoryTextFile__createContent()
         self.assertEqual(expected, toCompare)
         
@@ -163,6 +163,9 @@ def createRepo():
     repo.addDay(d)
     
     return repo
+
+def repoExport():
+    print createRepo().close()
 
 def exportRepo(days):
     return [dayParser(d) for d in days]

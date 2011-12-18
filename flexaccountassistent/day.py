@@ -6,6 +6,7 @@ Created on 24/10/2011
 
 import datetime
 from datetime import time
+from string import atoi
 
 def roundTime(timeToRound):
     u"""rounds time five minuter up or down"""
@@ -28,6 +29,9 @@ def timeToMinutes(t):
 
 class Day(object):
     '''
+from string import atoi
+from string import atoi
+from flexaccountassistent.flexAccountMenu import addDay
     Class that represents a working day.
     '''
     NORMAL = 0
@@ -131,7 +135,7 @@ class DayRepository(object):
 
 def dayParser(day):
     u"""Parses a day object into comma separated line, which can be used later to recreate object"""
-    separator = ";"
+    separator = DayRepositoryTextFile._separator
     toReturn = ""
     toReturn += day.date.isoformat()
     toReturn += separator
@@ -142,7 +146,7 @@ def dayParser(day):
     toReturn += "%d" % day._dayType
     toReturn += separator
     toReturn += day.endTime.isoformat()
-    toReturn + "\n"
+    toReturn += '\n'
     
     
     return toReturn
@@ -151,13 +155,37 @@ def createFileContent():
     pass
     
         
+def parseDayLine(line):
+    pass
+
+
 class DayRepositoryTextFile (DayRepository):
     u"""Implementation of DayRepository, that bases on a flat text file""" 
+    _path = 'faa.txt'
+    _separator = ";"
     
     def __init__(self, initialBalanceInMinutes=0, path = None):
         DayRepository.__init__(self)
         self.__days = {}
         self.balance = initialBalanceInMinutes
+        try:
+            file = open(DayRepositoryTextFile._path, 'r')
+            
+        except IOError:
+            print 'Could not found the save file'
+            
+        #if file.
+        #catch:
+        #pass
+            
+    def _readFileContent(self, file):
+        line = file.readline()
+        self.balance =  atoi(line)
+        while line != None :
+            self.addDay(parseDayLine(line))
+       
+        
+        
         
     
     def addDay(self, day):
@@ -174,7 +202,13 @@ class DayRepositoryTextFile (DayRepository):
         return [dayParser(value) for value in self.__days.values()]
     
     def __export(self):
+        f = open(DayRepositoryTextFile._path, 'wb')
+        print 'File opened'
         content = self.__createContent()
+        f.write("%f\n" % self.balance);
+        f.writelines(content)
+        f.close()
+        print 'File closed'
         return content
         
         
