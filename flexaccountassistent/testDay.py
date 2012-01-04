@@ -7,7 +7,7 @@ from datetime import time
 import unittest
 from flexaccountassistent import day
 from flexaccountassistent.day import Day, timeToMinutes, DictionaryDayService,\
-    DayRepositoryTextFile, dayParser
+    DayRepositoryTextFile,  parserDayLine
 import datetime
 
 #from flexaccounassistent import day
@@ -123,29 +123,57 @@ class TestDayDictionaryService(unittest.TestCase):
         
 class TestDayParser(unittest.TestCase):
     def testDayParser(self):
-        toCompare = "2011-12-03;30;08:20:00;0;16:20:00"
+        toCompare = "2011-12-03;30;08:20:00;0;16:20:00\n"
         d = Day(date = datetime.date(2011, 12, 03))
         d.setStop(time(16, 20))
         self.assertEqual(toCompare, day.dayParser(d))
     
-    def testClose(self):
-        dictionaryService = DictionaryDayService(50)
-        d = Day(date = TestDay.monday)
-        d.setStop(time(14, 20))
-        dictionaryService.addDay(d)
-        d = Day(date = TestDay.tuesday)
-        d.setStop(time(14, 20))
-        dictionaryService.addDay(d)
-        d = Day(date = TestDay.friday)
-        d.setStop(time(14, 20))
-        dictionaryService.addDay(d)
-        dictionaryService.close()
+#    def testClose(self):
+#        dictionaryService = DictionaryDayService(50)
+#        d = Day(date = TestDay.monday)
+#        d.setStop(time(14, 20))
+#        dictionaryService.addDay(d)
+#        d = Day(date = TestDay.tuesday)
+#        d.setStop(time(14, 20))
+#        dictionaryService.addDay(d)
+#        d = Day(date = TestDay.friday)
+#        d.setStop(time(14, 20))
+#        dictionaryService.addDay(d)
+#        dictionaryService.close()
+        
+class TestParserDayLine(unittest.TestCase):
+    def setUp(self):
+        self.day = self.createDay()
+    def testDate(self):
+        
+        dateToCompare = datetime.date(2011, 12, 03)
+        self.assertEqual(self.day.date, dateToCompare )
+    
+    def testPause(self):
+        pauseToCompare = 50
+        self.assertEqual(self.day.pause, pauseToCompare)
+    
+    def testStartTime(self):
+        startTimeToCompare = time(8, 50)
+        self.assertEqual(self.day.startTime, startTimeToCompare)
+        
+    def testEndTime(self):
+        endTimeToCompare = time(14, 20)
+        self.assertEqual(self.day.endTime, endTimeToCompare)
+    
+   
+        
+        
+    def createDay(self):
+        return parserDayLine('2011-12-03;50;08:50:00;0;14:20:00')
+    
+    
 
 class TestDayRepositoryTextFile(unittest.TestCase):
     
     def testCreateContent(self):
         repo = createRepo()
-        expected = ['2011-11-08;30;08:20:00;0;14:20:00', '2011-11-07;30;08:20:00;0;14:20:00', '2011-11-11;30;08:20:00;0;14:20:00']
+        expected = ['2011-11-08;30;08:20:00;0;14:20:00\n', '2011-11-07;30;08:20:00;0;14:20:00\n', '2011-11-11;30;08:20:00;0;14:20:00\n']
         toCompare = repo._DayRepositoryTextFile__createContent()
         self.assertEqual(expected, toCompare)
         
@@ -161,8 +189,10 @@ def createRepo():
     d = Day(date = TestDay.friday)
     d.setStop(time(14, 20))
     repo.addDay(d)
-    
     return repo
-
-def exportRepo(days):
-    return [dayParser(d) for d in days]
+#
+#def repoExport():
+#    print createRepo().close()
+#
+#def exportRepo(days):
+#    return [dayParser(d) for d in days]

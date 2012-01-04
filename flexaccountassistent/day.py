@@ -6,6 +6,7 @@ Created on 24/10/2011
 
 import datetime
 from datetime import time
+from string import atoi
 
 def roundTime(timeToRound):
     u"""rounds time five minuter up or down"""
@@ -28,6 +29,9 @@ def timeToMinutes(t):
 
 class Day(object):
     '''
+from string import atoi
+from string import atoi
+from flexaccountassistent.flexAccountMenu import addDay
     Class that represents a working day.
     '''
     NORMAL = 0
@@ -35,6 +39,12 @@ class Day(object):
     MINUTES_IN_HOUR = 60
     NORMAL_HOURS = 7.5
     FRIDAY_HOURS = 7
+    
+    DATE = 0
+    PAUSE = 1
+    START_TIME = 2
+    DAY_TYPE = 3
+    END_TIME = 4
 
     def __init__(self, date=None, pause=30, startTime=None, dayType = NORMAL):
         '''
@@ -131,7 +141,7 @@ class DayRepository(object):
 
 def dayParser(day):
     u"""Parses a day object into comma separated line, which can be used later to recreate object"""
-    separator = ";"
+    separator = DayRepositoryTextFile._separator
     toReturn = ""
     toReturn += day.date.isoformat()
     toReturn += separator
@@ -142,22 +152,70 @@ def dayParser(day):
     toReturn += "%d" % day._dayType
     toReturn += separator
     toReturn += day.endTime.isoformat()
-    toReturn + "\n"
+    toReturn += '\n'
     
-    
+   
     return toReturn
 
 def createFileContent():
     pass
     
         
+def parserDayLine(line):
+    splited = line.split(DayRepositoryTextFile._separator)
+    splittedDate = splited[Day.DATE].split('-')
+    year = int(splittedDate[0])
+    month = int(splittedDate[1])
+    day = int(splittedDate[2])
+    
+    date = datetime.date(year, month, day)
+    pause = int(splited[Day.PAUSE])
+    startTime = _parseTime(splited[Day.START_TIME])
+    endTime = _parseTime(splited[Day.END_TIME])
+    
+    toReturn = Day(date, pause, startTime)
+    toReturn.setStop(endTime)
+    
+    return toReturn
+
+def _parseTime(timeToParse):
+    splited = timeToParse.split(':')
+    hour = int(splited[0])
+    minute = int(splited[1])
+    
+    return time(hour, minute)
+    
+    
+
+
 class DayRepositoryTextFile (DayRepository):
     u"""Implementation of DayRepository, that bases on a flat text file""" 
+    _path = 'faa.txt'
+    _separator = ";"
     
     def __init__(self, initialBalanceInMinutes=0, path = None):
         DayRepository.__init__(self)
         self.__days = {}
         self.balance = initialBalanceInMinutes
+        try:
+            repoFile = open(DayRepositoryTextFile._path, 'r')
+            self._readFileContent(repoFile)
+            repoFile.close();
+        except IOError:
+            print 'Could not found the save file'
+            
+        #if file.
+        #catch:
+        #pass
+            
+    def _readFileContent(self, repoFile):
+        line = repoFile.readline()
+        self.balance =  atoi(line)
+        while line != None :
+            self.addDay(parserDayLine(line))
+       
+        
+        
         
     
     def addDay(self, day):
@@ -174,7 +232,13 @@ class DayRepositoryTextFile (DayRepository):
         return [dayParser(value) for value in self.__days.values()]
     
     def __export(self):
+        f = open(DayRepositoryTextFile._path, 'wb')
+        print 'File opened'
         content = self.__createContent()
+        f.write("%f\n" % self.balance);
+        f.writelines(content)
+        f.close()
+        print 'File closed'
         return content
         
         
