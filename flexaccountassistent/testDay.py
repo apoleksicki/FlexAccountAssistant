@@ -175,14 +175,15 @@ class TestDayRepositoryTextFile(unittest.TestCase):
     
         
     def testCreateContent(self):
+        daysPosition = 1
         repo = createRepo()
         expected = ['2011-11-08;30;08:20:00;0;14:20:00\n', '2011-11-07;30;08:20:00;0;14:20:00\n', '2011-11-11;30;08:20:00;0;14:20:00\n']
         toCompare = repo._DayRepositoryTextFile__createContent()
-        self.assertEqual(expected, toCompare)
+        self.assertEqual(expected, toCompare[daysPosition])
         
 
 def createRepo():
-    repo = DayRepositoryTextFile()
+    repo = DayRepositoryTextFile(path="asd")
     d = Day(date = TestDay.monday)
     d.setStop(time(14, 20))
     repo.addDay(d)

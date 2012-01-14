@@ -194,10 +194,13 @@ class DayRepositoryTextFile (DayRepository):
     def __init__(self, initialBalanceInMinutes=0, path = None):
         DayRepository.__init__(self)
         self.__days = {}
-        self.balance = initialBalanceInMinutes
+        self.initialBalance = initialBalanceInMinutes
+        self.balance = 0
         if initialBalanceInMinutes == 0:
             try:
-                repoFile = open(DayRepositoryTextFile._path, 'r')
+                if path == None:
+                    path = DayRepositoryTextFile._path
+                repoFile = open(path, 'r')
                 self._readFileContent(repoFile)
                 repoFile.close();
             except IOError:
@@ -211,7 +214,7 @@ class DayRepositoryTextFile (DayRepository):
             
     def _readFileContent(self, repoFile):
         line = repoFile.readline()
-        self.balance =  atoi(line)
+        self.initialBalance =  atoi(line)
         line = repoFile.readline()
         while line != None and line !='':
             self.addDay(parserDayLine(line))
@@ -229,18 +232,26 @@ class DayRepositoryTextFile (DayRepository):
         self.balance += day.countTime() - day.workingMinutes
     
     def getBalance(self):
-        return self.balance
+        return self.balance + self.initialBalance
     
     def __createContent(self):
-        return [dayParser(value) for value in self.__days.values()]
+        toReturn = []
+        toReturn.append(self.initialBalance)
+        toReturn.append([dayParser(value) for value in self.__days.values()])
+        return toReturn
     
     def __export(self):
-        os.remove(DayRepositoryTextFile._path)
+        balancePossition = 0
+        daysPossition = 1
+        try:
+            os.remove(DayRepositoryTextFile._path)
+        except:
+            print "File does not exist"
         f = open(DayRepositoryTextFile._path, 'wb')
         print 'File opened'
         content = self.__createContent()
-        f.write("%i\n" % self.balance);
-        f.writelines(content)
+        f.write("%i\n" % content[balancePossition]);
+        f.writelines(content[daysPossition])
         f.close()
         print 'File closed'
         return content
