@@ -77,6 +77,8 @@ class TestDayDictionaryService(unittest.TestCase):
     def testInint(self):
         dictionaryService = DictionaryDayService(600)
         self.assertEqual(dictionaryService.getBalance(), 600)
+       
+   
         
     def testOneDay(self):
         dictionaryService = DictionaryDayService(600)
@@ -171,6 +173,7 @@ class TestParserDayLine(unittest.TestCase):
 
 class TestDayRepositoryTextFile(unittest.TestCase):
     
+        
     def testCreateContent(self):
         repo = createRepo()
         expected = ['2011-11-08;30;08:20:00;0;14:20:00\n', '2011-11-07;30;08:20:00;0;14:20:00\n', '2011-11-11;30;08:20:00;0;14:20:00\n']

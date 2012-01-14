@@ -3,30 +3,59 @@ Created on 29/11/2011
 
 @author: Antek
 '''
-from flexaccountassistent.day import DictionaryDayService
+from flexaccountassistent.day import DictionaryDayService, Day
+from datetime import time
 
 welcomeText = u"Flex Account Assistent"
-makeDecision = u"Make you decision"
-addDay = u"1. Add day"
-viewFlexAccount = u"2. View flex account"
-createNowAccount = u"3."
-exit = u"0. Exit program"
+makeDecisionText = u"Make you decision"
+addDayText = u"1. Add day"
+viewFlexAccountText = u"2. View flex account"
+createNowAccountText = u"3."
+exitText = u"0. Exit program"
 
 valueErrorMsg = u"Wrong value"
 
 
 def printMenu():
     print welcomeText
-    print makeDecision
-    print addDay
-    print viewFlexAccount
-    print exit
+    print makeDecisionText
+    print addDayText
+    print viewFlexAccountText
+    print exitText
+
+
+def readTime(message):
+    timeToParse = raw_input(message)
+    splited = timeToParse.split(':')
+    hours = int(splited[0])
+    minutes = int(splited[1]) 
+    return time(hours, minutes)
+
+def createDay():
+    infoMessage = 'Adding a new day'
+    startTimeMessage = 'Give start time \'HH:MM\':'
+    pauseMessage = 'Give pause:'
+    endTimeMessage = 'Give end time \'HH:MM\':'
+    
+    print infoMessage
+    startTime = readTime(startTimeMessage)
+    endTime = readTime(endTimeMessage)
+    pause = int(raw_input(pauseMessage))
+    toReturn = Day(pause=pause, startTime=startTime)
+    toReturn.setStop(endTime)
+    return toReturn
 
 def printValueErrorMsg():
-    
     print valueErrorMsg
     
+def showBalance(service):
+    balanceInMinutes = service.getBalance()
+    hours = balanceInMinutes / 60
+    minutes = balanceInMinutes % 60
+    print 'Balance: %i:%i' % (hours, minutes)
+    
 EXIT = 0
+ADD_DAY = 1
 VIEW_BALANCE = 2
 NEW_ACCOUNT = 3
 service = None
@@ -38,7 +67,12 @@ if __name__ == "__main__":
         try:
             choice = int(raw_input("Your choice: "))
             if choice == VIEW_BALANCE:
-                print service.getBalance()
+                showBalance(service)
+            elif choice == ADD_DAY:
+                day = createDay()
+                service.addDay(day)
+            elif choice == EXIT:
+                service.close()
                  
         except EOFError:
             break

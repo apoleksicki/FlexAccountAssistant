@@ -5,6 +5,7 @@ Created on 24/10/2011
 '''
 
 import datetime
+import os
 from datetime import time
 from string import atoi
 
@@ -29,9 +30,6 @@ def timeToMinutes(t):
 
 class Day(object):
     '''
-from string import atoi
-from string import atoi
-from flexaccountassistent.flexAccountMenu import addDay
     Class that represents a working day.
     '''
     NORMAL = 0
@@ -197,12 +195,15 @@ class DayRepositoryTextFile (DayRepository):
         DayRepository.__init__(self)
         self.__days = {}
         self.balance = initialBalanceInMinutes
-        try:
-            repoFile = open(DayRepositoryTextFile._path, 'r')
-            self._readFileContent(repoFile)
-            repoFile.close();
-        except IOError:
-            print 'Could not found the save file'
+        if initialBalanceInMinutes == 0:
+            try:
+                repoFile = open(DayRepositoryTextFile._path, 'r')
+                self._readFileContent(repoFile)
+                repoFile.close();
+            except IOError:
+                print 'Could not found the save file'
+        else:
+            print 'Starting repository without save file'
             
         #if file.
         #catch:
@@ -211,8 +212,10 @@ class DayRepositoryTextFile (DayRepository):
     def _readFileContent(self, repoFile):
         line = repoFile.readline()
         self.balance =  atoi(line)
-        while line != None :
+        line = repoFile.readline()
+        while line != None and line !='':
             self.addDay(parserDayLine(line))
+            line = repoFile.readline()
        
         
         
@@ -232,10 +235,11 @@ class DayRepositoryTextFile (DayRepository):
         return [dayParser(value) for value in self.__days.values()]
     
     def __export(self):
+        os.remove(DayRepositoryTextFile._path)
         f = open(DayRepositoryTextFile._path, 'wb')
         print 'File opened'
         content = self.__createContent()
-        f.write("%f\n" % self.balance);
+        f.write("%i\n" % self.balance);
         f.writelines(content)
         f.close()
         print 'File closed'
