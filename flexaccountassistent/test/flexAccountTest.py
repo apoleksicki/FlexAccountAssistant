@@ -6,7 +6,7 @@ Created on 31/10/2011
 
 import unittest
 from datetime import time
-from flexaccountassistent.flexAccount import FlexAccount
+from flexaccountassistent.core.infrastructure.flexAccount import FlexAccount
 
 
 

@@ -5,8 +5,8 @@ Created on 27/10/2011
 '''
 from datetime import time
 import unittest
-from flexaccountassistent import day
-from flexaccountassistent.day import Day, timeToMinutes, DictionaryDayService,\
+from flexaccountassistent.core.infrastructure import day
+from flexaccountassistent.core.infrastructure.day import Day, timeToMinutes, DictionaryDayService,\
     DayRepositoryTextFile,  parserDayLine
 import datetime
 

@@ -3,7 +3,7 @@ Created on 29/11/2011
 
 @author: Antek
 '''
-from flexaccountassistent.day import DictionaryDayService, Day
+from flexaccountassistent.core.infrastructure.day import DictionaryDayService, Day
 from datetime import time
 
 welcomeText = u"Flex Account Assistent"
