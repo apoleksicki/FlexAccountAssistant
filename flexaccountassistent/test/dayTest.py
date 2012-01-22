@@ -6,8 +6,9 @@ Created on 27/10/2011
 from datetime import time
 import unittest
 from flexaccountassistent.core.infrastructure import day
-from flexaccountassistent.core.infrastructure.day import Day, timeToMinutes, DictionaryDayService,\
-    DayRepositoryTextFile,  parserDayLine
+from flexaccountassistent.core.infrastructure.day import Day, timeToMinutes 
+from flexaccountassistent.core.service.dayService import DictionaryDayService,\
+    DayRepositoryTextFile,  parserDayLine, dayParser
 import datetime
 
 #from flexaccounassistent import day
@@ -128,7 +129,7 @@ class TestDayParser(unittest.TestCase):
         toCompare = "2011-12-03;30;08:20:00;0;16:20:00\n"
         d = Day(date = datetime.date(2011, 12, 03))
         d.setStop(time(16, 20))
-        self.assertEqual(toCompare, day.dayParser(d))
+        self.assertEqual(toCompare, dayParser(d))
     
 #    def testClose(self):
 #        dictionaryService = DictionaryDayService(50)
