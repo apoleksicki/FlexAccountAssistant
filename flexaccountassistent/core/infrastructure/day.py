@@ -5,9 +5,7 @@ Created on 24/10/2011
 '''
 
 import datetime
-import os
 from datetime import time
-from string import atoi
 
 def roundTime(timeToRound):
     u"""rounds time five minuter up or down"""

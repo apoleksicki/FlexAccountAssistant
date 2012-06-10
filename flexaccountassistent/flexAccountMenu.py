@@ -3,8 +3,9 @@ Created on 29/11/2011
 
 @author: Antek
 '''
-from flexaccountassistent.core.infrastructure.day import DictionaryDayService, Day
+from flexaccountassistent.core.infrastructure.day import  Day
 from datetime import time
+from flexaccountassistent.core.service.dayService import DictionaryDayService
 
 welcomeText = u"Flex Account Assistent"
 makeDecisionText = u"Make you decision"
