@@ -131,18 +131,6 @@ class TestDayParser(unittest.TestCase):
         d.setStop(time(16, 20))
         self.assertEqual(toCompare, dayParser(d))
     
-#    def testClose(self):
-#        dictionaryService = DictionaryDayService(50)
-#        d = Day(date = TestDay.monday)
-#        d.setStop(time(14, 20))
-#        dictionaryService.addDay(d)
-#        d = Day(date = TestDay.tuesday)
-#        d.setStop(time(14, 20))
-#        dictionaryService.addDay(d)
-#        d = Day(date = TestDay.friday)
-#        d.setStop(time(14, 20))
-#        dictionaryService.addDay(d)
-#        dictionaryService.close()
         
 class TestParserDayLine(unittest.TestCase):
     def setUp(self):
@@ -195,9 +183,7 @@ def createRepo():
     d.setStop(time(14, 20))
     repo.addDay(d)
     return repo
-#
-#def repoExport():
-#    print createRepo().close()
-#
-#def exportRepo(days):
-#    return [dayParser(d) for d in days]
+
+class TestSimplifiedDay(unittest.TestCase):
+    
+    

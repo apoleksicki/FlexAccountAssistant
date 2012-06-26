@@ -5,6 +5,7 @@ Created on 24/10/2011
 '''
 
 import datetime
+import unittest
 from datetime import time
 
 def roundTime(timeToRound):
@@ -24,10 +25,14 @@ def roundTime(timeToRound):
     return time(roundedHour, roundedMinute)
   
 def timeToMinutes(t):
-    return t.hour * 60 + t.minute   
+    return t.hour * 60 + t.minute 
+  
 
 class Day(object):
     '''
+import unittest
+import unittest
+import unittest
     Class that represents a working day.
     '''
     NORMAL = 0
@@ -88,6 +93,63 @@ class Day(object):
         return workedMinutes
         
 
+
+
+class SimplifiedDay(object):
+    
+    '''SimplifiedDay is a container class, that contains only work time on a particular date.'''
+    
+    def __init__(self, hours, minutes, date=None):
+        self.hours = hours
+        self.minutes = minutes 
+        self.date = date 
+        
+class TimeCalculations(object):
+    ''' Holds amount of hours and minutest and allows to perform basic arithmetical operations.'''
+    def __init__(self, hours, minutes):
+        self.hours = hours
+        self.minutes = minutes
+    
+    def add(self, toAdd):
+        pass
+    
+    def subtract(self, toSubtract):
+        pass
+    
+    
+class TimeCalculationsTest(unittest.TestCase):
+    def test_when_adding_positive_to_positive_result_is_positive(self):
+        pass
+    
+    def test_adding_negative_to_negative_is_negative(self):
+        pass
+        
+    def test_when_adding_positive_to_negative_result_is_positive_when_positive_is_greater(self):
+        pass
+        
+    def test_when_adding_positive_to_negative_result_is_negative_when_negative_is_greater(self):
+        pass
+        
+    def test_when_adding_negative_to_positive_result_is_positive_when_positive_is_greater(self):
+        pass
+        
+    def test_when_adding_negative_to_positive_result_is_negative_when_negative_is_greater(self):
+        pass
+        
+    def test_subtracting_negative_from_negative_is_negative(self):
+        pass
+        
+    def test_when_subtracting_positive_from_negative_result_is_negative(self):
+        pass
+        
+    def test_when_subtracting_negative_from_postive_result_positive(self):
+        pass
+        
+    def test_when_subtracting_postive_from_positive_result_is_positive_when_first_is_greater(self):
+        pass
+        
+    def test_when_subtracting_positive_from_positive_result_is_negative_when_second_is_greater(self):
+        pass
         
         
         

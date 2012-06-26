@@ -4,7 +4,6 @@ Created on 27/10/2011
 @author: Antek
 '''
 
-from datetime import time
 
 class FlexAccount(object):
     """Hold balance of the flex account"""
