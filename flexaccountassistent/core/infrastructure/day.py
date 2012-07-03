@@ -104,52 +104,129 @@ class SimplifiedDay(object):
         self.minutes = minutes 
         self.date = date 
         
+def timeCalculationsWithDifferentSign(timeCalculations):
+    toReturn = TimeCalculations(timeCalculations.hours, timeCalculations.minutes)
+    if timeCalculations.sign == 1:
+        toReturn.sign = -1
+    return toReturn        
+        
 class TimeCalculations(object):
     ''' Holds amount of hours and minutest and allows to perform basic arithmetical operations.'''
-    def __init__(self, hours, minutes):
+    def __init__(self, hours, minutes, sign = 1):
         self.hours = hours
         self.minutes = minutes
+        self.sign = sign
+    
+    def __eq__(self, other):
+        return self.sign == other.sign and self.hours == other.hours and self.minutes == other.minutes
     
     def add(self, toAdd):
-        pass
+        hours = self.hours * self.sign
+        minutes = self.minutes * self.sign
+        
+        hoursToAdd = toAdd.hours * toAdd.sign
+        minutesToAdd = toAdd.minutes * toAdd.sign
+        
+        if self.sign * toAdd.sign == 1:
+            return TimeCalculations(hours + hoursToAdd, minutes + minutesToAdd, self.sign)
+        else:
+            pass
+            
     
     def subtract(self, toSubtract):
         pass
     
     
 class TimeCalculationsTest(unittest.TestCase):
-    def test_when_adding_positive_to_positive_result_is_positive(self):
-        pass
     
+    def test_when_adding_positive_to_positive_result_is_positive(self):
+        time1 = TimeCalculations(2, 15)
+        time2 = TimeCalculations(1, 55)
+        expected = TimeCalculations(4, 10)
+        self.assertEqual(expected, time1.add(time2))
+        
     def test_adding_negative_to_negative_is_negative(self):
-        pass
+        time1 = TimeCalculations(2, 15)
+        time2 = TimeCalculations(1, 55)
+        expected = TimeCalculations(4, 10)
+        self.assertEqual(expected, time1.add(time2))
         
     def test_when_adding_positive_to_negative_result_is_positive_when_positive_is_greater(self):
-        pass
+        time1 = TimeCalculations(2, 15, -1)
+        time2 = TimeCalculations(1, 55, -1)
+        expected = TimeCalculations(4, 10, -1)
+        self.assertEqual(expected, time1.add(time2))
         
     def test_when_adding_positive_to_negative_result_is_negative_when_negative_is_greater(self):
-        pass
+        time1 = TimeCalculations(1, 55)
+        time2 = TimeCalculations(2, 15, -1)
+        expected = TimeCalculations(0, 20, -1)
+        self.assertEqual(expected, time1.add(time2))
+
         
     def test_when_adding_negative_to_positive_result_is_positive_when_positive_is_greater(self):
-        pass
+        time1 = TimeCalculations(2, 15, -1)
+        time2 = TimeCalculations(1, 55, -1)
+        expected = TimeCalculations(4, 10, -1)
+        self.assertEqual(expected, time1.add(time2))
         
     def test_when_adding_negative_to_positive_result_is_negative_when_negative_is_greater(self):
-        pass
+        time1 = TimeCalculations(2, 15, -1)
+        time2 = TimeCalculations(1, 55, 1)
+        expected = TimeCalculations(0, 20, -1)
+        self.assertEqual(expected, time2.add(time1))
+
         
-    def test_subtracting_negative_from_negative_is_negative(self):
-        pass
+    def test_subtracting_negative_from_negative_acts_like_adding(self):
+        time1 = TimeCalculations(2, 15, -1)
+        time2 = TimeCalculations(1, 55, -1)
+        expected = TimeCalculations(0, 20, -1)
+        self.assertEqual(expected, time1.subtract(time2))
         
     def test_when_subtracting_positive_from_negative_result_is_negative(self):
-        pass
+        time1 = TimeCalculations(2, 15, -1)
+        time2 = TimeCalculations(1, 55, 1)
+        expected = TimeCalculations(4, 10, -1)
+        self.assertEqual(expected, time1.subtract(time2))
         
-    def test_when_subtracting_negative_from_postive_result_positive(self):
-        pass
+    def test_when_subtracting_negative_from_postive_result_is_positive(self):
+        time1 = TimeCalculations(2, 15, 1)
+        time2 = TimeCalculations(1, 55, -1)
+        expected = TimeCalculations(4, 10, -1)
+        self.assertEqual(expected, time1.subtract(time2))
         
     def test_when_subtracting_postive_from_positive_result_is_positive_when_first_is_greater(self):
-        pass
+        time1 = TimeCalculations(2, 15, 1)
+        time2 = TimeCalculations(1, 55, 1)
+        expected = TimeCalculations(0, 20, 1)
+        self.assertEqual(expected, time1.subtract(time2))
         
     def test_when_subtracting_positive_from_positive_result_is_negative_when_second_is_greater(self):
-        pass
+        time1 = TimeCalculations(2, 15, -1)
+        time2 = TimeCalculations(1, 55, 1)
+        expected = TimeCalculations(0, 20, -1)
+        self.assertEqual(expected, time2.subtract(time1))
+    
+    def test_sign_can_be_only_one_or_minus_one(self):
+        try:
+            TimeCalculations(0, 0, 15)
+            self.assertTrue(False)
+        except:
+            pass
+    
+    def test_amount_of_minutest_can_be_between_0_and_59(self):
+        try:
+            TimeCalculations(0, 100)
+            self.assertTrue(False)
+        except:
+            pass
+    
+    def test_amount_of_hours_has_to_be_greater_than_zero(self):
+        try:
+            TimeCalculations(-12, 0, 0)
+            self.assertTrue(False)
+        except:
+            pass
         
         
         
