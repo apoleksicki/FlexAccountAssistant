@@ -120,6 +120,24 @@ class TimeCalculations(object):
     def __eq__(self, other):
         return self.sign == other.sign and self.hours == other.hours and self.minutes == other.minutes
     
+    def __ge__(self, other):
+        if self.sign < other.sign:
+            return False
+        if self.hours >= other.hours:
+            return True
+        else:
+            return self.minutes >= other.minutes
+#    def __cmp__(self, other):
+#        if type(self) != type(other):
+#            return False
+#        return 
+        
+    def __compareAbsoluteValues(self, other):
+        if self.hours > other.hours:
+            return self.hours - other.hours
+        elif self.hours == other.hours:
+            return self.minutes - other.minutes
+
     def add(self, toAdd):
         hours = self.hours * self.sign
         minutes = self.minutes * self.sign
@@ -127,14 +145,41 @@ class TimeCalculations(object):
         hoursToAdd = toAdd.hours * toAdd.sign
         minutesToAdd = toAdd.minutes * toAdd.sign
         
+        resultMinutes = 0
+        resultHours = 0
+        resultSign = 0
+        
         if self.sign * toAdd.sign == 1:
-            return TimeCalculations(hours + hoursToAdd, minutes + minutesToAdd, self.sign)
+            resultMinutes = abs(minutes + minutesToAdd)
+            resultHours = abs(hours + hoursToAdd) 
+            resultSign = self.sign
         else:
-            pass
+            if self.__compareAbsoluteValues(toAdd) < 0:
+                resultSign = toAdd.sign
+                resultMinutes = minutesToAdd - minutes
+                resultHours = abs(hoursToAdd - minutes)
+            else:
+                resultMinutes = minutes + minutesToAdd
+                resultHours = abs(hours + hoursToAdd)
+                resultSign = self.sign
+            if resultMinutes < 0:
+                resultHours = resultHours - 1
+                resultMinutes = resultMinutes + 60
+                if resultHours < 0:
+                    resultHours = abs(resultHours)
+                    resultSign = resultSign * -1
+                    
+        overflow = resultMinutes / 60
+        resultMinutes = resultMinutes % 60 
+        resultHours = resultHours + overflow * resultSign
+        return TimeCalculations(resultHours, resultMinutes, resultSign)
+
+            
             
     
     def subtract(self, toSubtract):
-        pass
+        withChangedSign = TimeCalculations(toSubtract.hours, toSubtract.minutes, toSubtract.sign * -1)
+        return self.add(withChangedSign)
     
     
 class TimeCalculationsTest(unittest.TestCase):
@@ -143,7 +188,7 @@ class TimeCalculationsTest(unittest.TestCase):
         time1 = TimeCalculations(2, 15)
         time2 = TimeCalculations(1, 55)
         expected = TimeCalculations(4, 10)
-        self.assertEqual(expected, time1.add(time2))
+        self.assertTrue(expected == time1.add(time2))
         
     def test_adding_negative_to_negative_is_negative(self):
         time1 = TimeCalculations(2, 15)
