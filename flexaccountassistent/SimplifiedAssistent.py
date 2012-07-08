@@ -54,18 +54,11 @@ class TimeCalculations(object):
     def convertToMinutes(self):
         return self.sign * (self.hours * 60 + self.minutes)
     
-    def __getSign(self, number):
-        if number >= 0:
-            return 1
-        else:
-            return -1
-
-
     def add(self, other):
         selfConverted = self.convertToMinutes()
         otherConverted = other.convertToMinutes() 
         resultConverted = selfConverted + otherConverted
-        resultSign = self.__getSign(resultConverted)
+        resultSign = getSign(resultConverted)
         resultConverted *= resultSign 
 
         return TimeCalculations(resultConverted / 60, resultConverted % 60, resultSign)
@@ -76,8 +69,53 @@ class TimeCalculations(object):
     def subtract(self, toSubtract):
         withChangedSign = TimeCalculations(toSubtract.hours, toSubtract.minutes, toSubtract.sign * -1)
         return self.add(withChangedSign)
+
+
+def getSign(number):
+    if number >= 0:
+        return 1
+    else:
+        return -1
+
+
+    
+def createTimeCalculation(toConvert):
+    splited = toConvert.partition(':')
+    if splited.__len__() != 3:
+        raise ValueError
     
     
+class TimeCalculationCreationTest(unittest.TestCase):
+    def test_format_has_two_numbers_separated_with_a_colon(self):
+        time1 = TimeCalculations(2, 15)
+        self.assertTrue(time1, createTimeCalculation('2:15'))
+    
+    def test_lack_of_colon_raises_excpetion(self):
+        self.__performTest('215')
+    def test_lack_of_hours_raises_excpetion(self):
+        self.__performTest(':15')
+        
+    def test_lack_of_minutes_raises_excpetion(self):
+        self.__performTest('2:')
+    
+    def test_minutes_with_minus_raise_excpetion(self):
+        self.__performTest('2:-15')
+    
+    def test_incorrect_amount_of_hours_raises_excpetion(self):
+        self.__performTest('2a:0')
+    
+    def test_incorrect_amount_of_minutes_raises_excpetion(self):
+        self.__performTest('2:a0')
+    
+    def __performTest(self, toTest):
+        try:
+            createTimeCalculation(toTest)
+        except ValueError:
+            pass
+        else:
+            self.fail()     
+        
+
 class TimeCalculationsTest(unittest.TestCase):
     
     def test_when_adding_positive_to_positive_result_is_positive(self):
