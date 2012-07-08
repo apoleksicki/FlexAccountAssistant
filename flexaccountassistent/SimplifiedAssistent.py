@@ -80,9 +80,20 @@ def getSign(number):
 
     
 def createTimeCalculation(toConvert):
+    """Creates a TimeCalculation form a string
+    that is in the following format signHH:MM"""
     splited = toConvert.partition(':')
     if splited.__len__() != 3:
         raise ValueError
+    hours = int(splited[0])
+    minutes = int(splited[2])
+    if minutes < 0:
+        raise ValueError
+    sign = getSign(hours)
+    hours *= sign
+    return TimeCalculations(hours, minutes, sign)
+    
+    
     
     
 class TimeCalculationCreationTest(unittest.TestCase):
@@ -112,6 +123,10 @@ class TimeCalculationCreationTest(unittest.TestCase):
             createTimeCalculation(toTest)
         except ValueError:
             pass
+        
+        except SyntaxError:
+            pass
+        
         else:
             self.fail()     
         
