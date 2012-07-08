@@ -24,6 +24,10 @@ class TimeCalculations(object):
         self.sign = sign
     
     def __eq__(self, other):
+        
+        if self.__class__ != other.__class__:
+            return False
+        
         return self.sign == other.sign and self.hours == other.hours and self.minutes == other.minutes
     
     def __ge__(self, other):
@@ -92,6 +96,43 @@ def createTimeCalculation(toConvert):
     sign = getSign(hours)
     hours *= sign
     return TimeCalculations(hours, minutes, sign)
+
+import os, pickle
+
+
+def getDataFile(mode = 'w'):
+    DIR_NAME = ".faa"
+    FILE_NAME = "faa.dat"
+    
+    if not os.path.exists(DIR_NAME):
+        os.makedirs(DIR_NAME)    
+    return open(os.path.join(DIR_NAME, FILE_NAME), mode)
+
+def init(initial = None):
+
+    dataFile = getDataFile() 
+    
+    if initial == None:
+        initial = TimeCalculations(0, 0)
+    
+    
+    
+    
+    pickle.dump(initial, dataFile, pickle.HIGHEST_PROTOCOL) 
+
+def status():
+    dataFile = getDataFile('r')
+    status = pickle.load(dataFile)
+    sign = ''
+    if (status.sign == -1):
+        sign = '-'
+    
+    
+    print('%s%2d:%2d' % (sign, status.hours, status.minutes))
+    
+    
+    
+        
     
     
     
