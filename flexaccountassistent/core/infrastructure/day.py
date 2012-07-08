@@ -113,6 +113,10 @@ def timeCalculationsWithDifferentSign(timeCalculations):
 class TimeCalculations(object):
     ''' Holds amount of hours and minutest and allows to perform basic arithmetical operations.'''
     def __init__(self, hours, minutes, sign = 1):
+        
+        if not self.__checkValues(hours, minutes, sign):
+            raise ValueError
+        
         self.hours = hours
         self.minutes = minutes
         self.sign = sign
@@ -127,52 +131,42 @@ class TimeCalculations(object):
             return True
         else:
             return self.minutes >= other.minutes
-#    def __cmp__(self, other):
-#        if type(self) != type(other):
-#            return False
-#        return 
-        
-    def __compareAbsoluteValues(self, other):
-        if self.hours > other.hours:
-            return self.hours - other.hours
-        elif self.hours == other.hours:
-            return self.minutes - other.minutes
 
-    def add(self, toAdd):
-        hours = self.hours * self.sign
-        minutes = self.minutes * self.sign
+    def __checkSign(self, sign):
+        return sign == 1 or sign == -1
+    
+    def __checkHours(self, hours):
+        return hours >= 0
+    
+    def __checkMinutes(self, minutes):
+        return minutes >= 0 and minutes <= 59
+    
+    def __checkValues(self, hours, minutes, sign):
         
-        hoursToAdd = toAdd.hours * toAdd.sign
-        minutesToAdd = toAdd.minutes * toAdd.sign
+        hoursCorrect = self.__checkHours(hours) 
+        minutesCorrect = self.__checkMinutes(minutes)
+        signCorrect = self.__checkSign(sign)
         
-        resultMinutes = 0
-        resultHours = 0
-        resultSign = 0
+        return  hoursCorrect and minutesCorrect and signCorrect  
         
-        if self.sign * toAdd.sign == 1:
-            resultMinutes = abs(minutes + minutesToAdd)
-            resultHours = abs(hours + hoursToAdd) 
-            resultSign = self.sign
+    def convertToMinutes(self):
+        return self.sign * (self.hours * 60 + self.minutes)
+    
+    def __getSign(self, number):
+        if number >= 0:
+            return 1
         else:
-            if self.__compareAbsoluteValues(toAdd) < 0:
-                resultSign = toAdd.sign
-                resultMinutes = minutesToAdd - minutes
-                resultHours = abs(hoursToAdd - minutes)
-            else:
-                resultMinutes = minutes + minutesToAdd
-                resultHours = abs(hours + hoursToAdd)
-                resultSign = self.sign
-            if resultMinutes < 0:
-                resultHours = resultHours - 1
-                resultMinutes = resultMinutes + 60
-                if resultHours < 0:
-                    resultHours = abs(resultHours)
-                    resultSign = resultSign * -1
-                    
-        overflow = resultMinutes / 60
-        resultMinutes = resultMinutes % 60 
-        resultHours = resultHours + overflow * resultSign
-        return TimeCalculations(resultHours, resultMinutes, resultSign)
+            return -1
+
+
+    def add(self, other):
+        selfConverted = self.convertToMinutes()
+        otherConverted = other.convertToMinutes() 
+        resultConverted = selfConverted + otherConverted
+        resultSign = self.__getSign(resultConverted)
+        resultConverted *= resultSign 
+
+        return TimeCalculations(resultConverted / 60, resultConverted % 60, resultSign)
 
             
             
@@ -237,7 +231,7 @@ class TimeCalculationsTest(unittest.TestCase):
     def test_when_subtracting_negative_from_postive_result_is_positive(self):
         time1 = TimeCalculations(2, 15, 1)
         time2 = TimeCalculations(1, 55, -1)
-        expected = TimeCalculations(4, 10, -1)
+        expected = TimeCalculations(4, 10)
         self.assertEqual(expected, time1.subtract(time2))
         
     def test_when_subtracting_postive_from_positive_result_is_positive_when_first_is_greater(self):
@@ -247,7 +241,7 @@ class TimeCalculationsTest(unittest.TestCase):
         self.assertEqual(expected, time1.subtract(time2))
         
     def test_when_subtracting_positive_from_positive_result_is_negative_when_second_is_greater(self):
-        time1 = TimeCalculations(2, 15, -1)
+        time1 = TimeCalculations(2, 15, 1)
         time2 = TimeCalculations(1, 55, 1)
         expected = TimeCalculations(0, 20, -1)
         self.assertEqual(expected, time2.subtract(time1))
@@ -256,22 +250,29 @@ class TimeCalculationsTest(unittest.TestCase):
         try:
             TimeCalculations(0, 0, 15)
             self.assertTrue(False)
-        except:
+        except ValueError:
             pass
+        else:
+            self.fail("Sign can be only 1 or -1")
     
     def test_amount_of_minutest_can_be_between_0_and_59(self):
         try:
             TimeCalculations(0, 100)
             self.assertTrue(False)
-        except:
+        except ValueError:
             pass
+        else:
+            self.fail("Minutes can be only between 0 and 59")
+        
     
     def test_amount_of_hours_has_to_be_greater_than_zero(self):
         try:
             TimeCalculations(-12, 0, 0)
             self.assertTrue(False)
-        except:
+        except ValueError:
             pass
+        else:
+            self.fail("Amount of hours has to be equals or higher than 0")
         
         
         
