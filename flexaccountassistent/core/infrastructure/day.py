@@ -92,17 +92,6 @@ import unittest
         
         return workedMinutes
         
-
-
-
-class SimplifiedDay(object):
-    
-    '''SimplifiedDay is a container class, that contains only work time on a particular date.'''
-    
-    def __init__(self, hours, minutes, date=None):
-        self.hours = hours
-        self.minutes = minutes 
-        self.date = date 
         
 def timeCalculationsWithDifferentSign(timeCalculations):
     toReturn = TimeCalculations(timeCalculations.hours, timeCalculations.minutes)
