@@ -5,6 +5,7 @@ the planned time.
 @author: Antek
 '''
 import unittest
+import flexaccountassistent
 
 def timeCalculationsWithDifferentSign(timeCalculations):
     toReturn = TimeCalculations(timeCalculations.hours, timeCalculations.minutes)
@@ -97,33 +98,37 @@ def createTimeCalculation(toConvert):
     hours *= sign
     return TimeCalculations(hours, minutes, sign)
 
-import os, pickle
+import os, pickle, tempfile as tmp
 
+_HOME_DIR = '~'
+_DIR_NAME = '.faa'
 
-def getDataFile(mode = 'w'):
-    HOME_DIR = '~'
-    DIR_NAME = '.faa'
-    PATH = os.path.join(HOME_DIR, DIR_NAME)
-    FILE_NAME = "faa.dat"
+def getDefaultPath():
+    return os.path.join(_HOME_DIR, _DIR_NAME)
     
-    if not os.path.exists(PATH):
-        os.makedirs(PATH)    
-    return open(os.path.join(PATH, FILE_NAME), mode)
+class FlexAccountDB(object):
+    def __init__(self, dbfile=getDefaultPath(), fileName ='faa.dat'):
+        self.dbfile = dbfile    
+        self.fileName = fileName    
+    def getDataFilePath(self):
+        return os.path.join(self.dbfile, self.fileName)
+    def getDataFile(self, mode = 'w'):
+        if not os.path.exists(self.dbfile):
+            os.makedirs(self.dbfile)    
+        return open(self.getDataFilePath(), mode)
+    
 
-def init(initial = None):
 
-    dataFile = getDataFile() 
+def init(dbase = FlexAccountDB(),  initial = None):
+
+    dataFile = dbase.getDataFile('w')
     
     if initial == None:
         initial = TimeCalculations(0, 0)
-    
-    
-    
-    
     pickle.dump(initial, dataFile, pickle.HIGHEST_PROTOCOL) 
 
-def status():
-    dataFile = getDataFile('r')
+def status(dbase = FlexAccountDB()):
+    dataFile = dbase.getDataFile('r')
     status = pickle.load(dataFile)
     sign = ''
     if (status.sign == -1):
@@ -132,10 +137,28 @@ def status():
     return status    
     
     
+class StatusTest(unittest.TestCase):
+    def test_status_without_init_rises_exception(self):
+        try:
+            status()
+            self.fail()
+        except IOError:
+            pass
+            
+class InterfaceFunctionTest(unittest.TestCase):
+    def setUp(self):
+        self.tmpdir = tmp.mkdtemp()
+        print(self.tmpdir)
+        self.DB = FlexAccountDB(self.tmpdir)
+
+    def test_status_returns_correct_value(self):
+        toCompare = TimeCalculations(2, 15)
+        init(self.DB, toCompare)
+        self.assertEqual(toCompare, status(self.DB))
         
-    
-    
-    
+    def tearDown(self):
+        os.remove(self.DB.getDataFilePath())
+        os.rmdir(self.tmpdir)  
     
 class TimeCalculationCreationTest(unittest.TestCase):
     def test_format_has_two_numbers_separated_with_a_colon(self):
