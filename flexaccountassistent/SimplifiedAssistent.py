@@ -101,12 +101,14 @@ import os, pickle
 
 
 def getDataFile(mode = 'w'):
-    DIR_NAME = ".faa"
+    HOME_DIR = '~'
+    DIR_NAME = '.faa'
+    PATH = os.path.join(HOME_DIR, DIR_NAME)
     FILE_NAME = "faa.dat"
     
-    if not os.path.exists(DIR_NAME):
-        os.makedirs(DIR_NAME)    
-    return open(os.path.join(DIR_NAME, FILE_NAME), mode)
+    if not os.path.exists(PATH):
+        os.makedirs(PATH)    
+    return open(os.path.join(PATH, FILE_NAME), mode)
 
 def init(initial = None):
 
@@ -126,10 +128,8 @@ def status():
     sign = ''
     if (status.sign == -1):
         sign = '-'
-    
-    
     print('%s%2d:%2d' % (sign, status.hours, status.minutes))
-    
+    return status    
     
     
         
