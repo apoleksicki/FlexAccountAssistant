@@ -103,13 +103,14 @@ _HOME_DIR = '~'
 _DIR_NAME = '.faa'
 
 def getDefaultPath():
-    return os.path.join(_HOME_DIR, _DIR_NAME)
+    return os.path.join(os.path.expanduser(_HOME_DIR), _DIR_NAME)
     
 class FlexAccountDB(object):
     def __init__(self, dbfile=getDefaultPath(), fileName ='faa.dat'):
         self.dbfile = dbfile    
         self.fileName = fileName    
     def getDataFilePath(self):
+        print(os.path.join(self.dbfile, self.fileName))
         return os.path.join(self.dbfile, self.fileName)
     def getDataFile(self, mode = 'w'):
         if not os.path.exists(self.dbfile):
@@ -136,7 +137,7 @@ def status(dbase = FlexAccountDB()):
     print('%s%2d:%2d' % (sign, status.hours, status.minutes))
     return status    
     
-def add(dbase, toAdd):
+def add(toAdd, dbase = FlexAccountDB()):
     present = status(dbase)
     init(dbase, present.add(toAdd))
     
