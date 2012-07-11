@@ -5,7 +5,6 @@ the planned time.
 @author: Antek
 '''
 import unittest
-import flexaccountassistent
 
 def timeCalculationsWithDifferentSign(timeCalculations):
     toReturn = TimeCalculations(timeCalculations.hours, timeCalculations.minutes)
@@ -120,7 +119,7 @@ class FlexAccountDB(object):
 
 
 def init(dbase = FlexAccountDB(),  initial = None):
-
+    '''Initializes the database.'''
     dataFile = dbase.getDataFile('w')
     
     if initial == None:
@@ -128,6 +127,7 @@ def init(dbase = FlexAccountDB(),  initial = None):
     pickle.dump(initial, dataFile, pickle.HIGHEST_PROTOCOL) 
 
 def status(dbase = FlexAccountDB()):
+    '''Returns the value of the flex account'''
     dataFile = dbase.getDataFile('r')
     status = pickle.load(dataFile)
     sign = ''
@@ -136,6 +136,9 @@ def status(dbase = FlexAccountDB()):
     print('%s%2d:%2d' % (sign, status.hours, status.minutes))
     return status    
     
+def add(dbase, toAdd):
+    present = status(dbase)
+    init(dbase, present.add(toAdd))
     
 class StatusTest(unittest.TestCase):
     def test_status_without_init_rises_exception(self):
@@ -144,21 +147,45 @@ class StatusTest(unittest.TestCase):
             self.fail()
         except IOError:
             pass
-            
-class InterfaceFunctionTest(unittest.TestCase):
+        
+        
+class TestWithDBMock(object):
     def setUp(self):
         self.tmpdir = tmp.mkdtemp()
         print(self.tmpdir)
         self.DB = FlexAccountDB(self.tmpdir)
+    def tearDown(self):
+        os.remove(self.DB.getDataFilePath())
+        os.rmdir(self.tmpdir)  
+ 
+    
+class AddTest(TestWithDBMock, unittest.TestCase):
+    def _performTest(self, initial, toAdd, toCompare):
+        init(self.DB, initial)
+        add(self.DB, toAdd)
+        self.assertEqual(toCompare, status(self.DB))
+
+    def test_add_with_positive_gives_correct_result(self):
+        initial = TimeCalculations(2, 15)
+        toAdd = TimeCalculations(1, 55)
+        toCompare = TimeCalculations(4, 10)
+        self._performTest(initial, toAdd, toCompare)
+
+    def test_add_with_negative_gives_correct_result(self):
+        initial = TimeCalculations(1, 55)
+        toAdd = TimeCalculations(2, 15, -1)
+        toCompare = TimeCalculations(0, 20, -1)
+        self._performTest(initial, toAdd, toCompare)
+
+            
+class InterfaceFunctionTest(TestWithDBMock, unittest.TestCase):
 
     def test_status_returns_correct_value(self):
         toCompare = TimeCalculations(2, 15)
         init(self.DB, toCompare)
         self.assertEqual(toCompare, status(self.DB))
         
-    def tearDown(self):
-        os.remove(self.DB.getDataFilePath())
-        os.rmdir(self.tmpdir)  
+
     
 class TimeCalculationCreationTest(unittest.TestCase):
     def test_format_has_two_numbers_separated_with_a_colon(self):
