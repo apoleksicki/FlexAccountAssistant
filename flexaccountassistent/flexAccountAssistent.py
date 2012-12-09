@@ -110,7 +110,7 @@ class FlexAccountDB(object):
         self.dbfile = dbfile    
         self.fileName = fileName    
     def getDataFilePath(self):
-        print(os.path.join(self.dbfile, self.fileName))
+        #print(os.path.join(self.dbfile, self.fileName))
         return os.path.join(self.dbfile, self.fileName)
     def getDataFile(self, mode = 'w'):
         if not os.path.exists(self.dbfile):
@@ -130,12 +130,7 @@ def init(dbase = FlexAccountDB(),  initial = None):
 def status(dbase = FlexAccountDB()):
     '''Returns the value of the flex account'''
     dataFile = dbase.getDataFile('r')
-    status = pickle.load(dataFile)
-    sign = ''
-    if (status.sign == -1):
-        sign = '-'
-    print('%s%2d:%2d' % (sign, status.hours, status.minutes))
-    return status    
+    return pickle.load(dataFile)
     
 def add(toAdd, dbase = FlexAccountDB()):
     present = status(dbase)

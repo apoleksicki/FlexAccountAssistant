@@ -3,7 +3,13 @@ Created on 11/07/2012
 Provides a console interface to deal with 
 @author: Antek
 '''
-import argparse, flexaccountassistent.flexAccountAssistent as faa
+import argparse, flexAccountAssistent as faa
+
+def timeCalcToString(toParse):
+    sign = ''
+    if (toParse.sign == -1):
+        sign = '-'
+    print '%s%2d:%2d' % (sign, toParse.hours, toParse.minutes)  
 
 if __name__ == '__main__':
     CHOICES = ['init', 'status', 'add', 'subtract', 'adjust']
@@ -18,11 +24,15 @@ if __name__ == '__main__':
     time = args.time
     
     if operation == CHOICES[0]:
+        timeCalc = None
         if (time != None):
             timeCalc = faa.createTimeCalculation(time)
-        faa.init(timeCalc)
+        faa.init(initial=timeCalc)
     elif operation == CHOICES[1]:
-        faa.status()
+        try:
+            timeCalcToString(faa.status())
+        except IOError:
+            print "The flex account assistent hasn't been initialised. Please run init." 
     elif operation == CHOICES[2] or CHOICES[3]:
         timeCalc = faa.createTimeCalculation(time)
         if operation == CHOICES[3]:
@@ -31,5 +41,8 @@ if __name__ == '__main__':
     elif operation == CHOICES[4]:
         timeCalc = faa.createTimeCalculation(time)
         faa.init(timeCalc)
+   
+   
         
-    print(args.operation)
+
+        
