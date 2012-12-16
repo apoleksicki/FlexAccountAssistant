@@ -136,29 +136,30 @@ def add(toAdd, dbase = FlexAccountDB()):
     present = status(dbase)
     init(dbase, present.add(toAdd))
     
-class StatusTest(unittest.TestCase):
-    def test_status_without_init_rises_exception(self):
-        try:
-            status()
-            self.fail()
-        except IOError:
-            pass
-        
-        
 class TestWithDBMock(object):
     def setUp(self):
         self.tmpdir = tmp.mkdtemp()
         print(self.tmpdir)
         self.DB = FlexAccountDB(self.tmpdir)
     def tearDown(self):
-        os.remove(self.DB.getDataFilePath())
+        repoPath = self.DB.getDataFilePath()
+        if os.path.exists(repoPath):
+            os.remove(repoPath)
         os.rmdir(self.tmpdir)  
- 
+
+class StatusTest(TestWithDBMock, unittest.TestCase):
+    def test_status_without_init_rises_exception(self):
+        try:
+            status(self.DB)
+            self.fail()
+        except IOError:
+            pass
+         
     
 class AddTest(TestWithDBMock, unittest.TestCase):
     def _performTest(self, initial, toAdd, toCompare):
         init(self.DB, initial)
-        add(self.DB, toAdd)
+        add(toAdd, self.DB)
         self.assertEqual(toCompare, status(self.DB))
 
     def test_add_with_positive_gives_correct_result(self):
