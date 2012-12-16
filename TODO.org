@@ -10,4 +10,7 @@
 * TODO Log
 ** TODO Create a log of the changes
 
+* TODO Cleanup
+** TODO Remove the old classes.
+
 
