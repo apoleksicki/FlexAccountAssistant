@@ -4,7 +4,7 @@ This version of FlexAccountAssistent only registers the difference between worke
 the planned time.
 @author: Antek
 '''
-import unittest
+import os, pickle
 
 def timeCalculationsWithDifferentSign(timeCalculations):
     toReturn = TimeCalculations(timeCalculations.hours, timeCalculations.minutes)
@@ -97,7 +97,7 @@ def createTimeCalculation(toConvert):
     hours *= sign
     return TimeCalculations(hours, minutes, sign)
 
-import os, pickle
+
 
 _HOME_DIR = '~'
 _DIR_NAME = '.faa'
