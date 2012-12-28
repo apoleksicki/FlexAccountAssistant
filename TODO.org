@@ -10,8 +10,8 @@
 * TODO Log
 ** TODO Create a log of the changes
 
-* TODO Cleanup
-** TODO Remove the old classes.
+* DONE Cleanup
+** DONE Remove the old classes.
 * TODO A clearer db interface
 FlexAccountDB should not return a file. It should take and return an object, that is later on put into the db.
 
