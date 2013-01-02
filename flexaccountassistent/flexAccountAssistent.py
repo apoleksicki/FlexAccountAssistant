@@ -116,6 +116,10 @@ class FlexAccountDB(object):
         if not os.path.exists(self.dbfile):
             os.makedirs(self.dbfile)    
         return open(self.getDataFilePath(), mode)
+    def udpateStatus(self, newValue):
+        pass
+    def readStatus(self):
+        pass
     
 
 
