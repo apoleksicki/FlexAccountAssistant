@@ -66,7 +66,11 @@ class TimeCalculations(object):
         resultConverted *= resultSign 
 
         return TimeCalculations(resultConverted / 60, resultConverted % 60, resultSign)
-
+    def __str__(self):
+        sign = ''
+        if (self.sign == -1):
+            sign = '-'
+        return 'Status: %s%2d:%2d\n' % (sign, self.hours, self.minutes)  
             
             
     
@@ -78,6 +82,8 @@ class Status(object):
     def __init__(self, timeCalculations, timestamp= datetime.date.today()):
         self.timeCalculations = timeCalculations
         self.timestamp = timestamp
+    def __str__(self):
+        return 'Last modification: %s\n' % (self.timestamp)    
 
 def getSign(number):
     if number >= 0:
