@@ -2,8 +2,8 @@
 ** TODO Provide a better argument structure
 
 * TODO Timestamp showing
-** TODO Step 1
-*** TODO Show the last date of the last modification
+** DONE Step 1
+*** DONE Show the last date of the last modification
 ** TODO Step two
 *** TODO Show an overview of the status in the last week/month
 
