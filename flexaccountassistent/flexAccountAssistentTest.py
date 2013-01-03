@@ -16,7 +16,7 @@ class TestWithDBMock(object):
         print(self.tmpdir)
         self.DB = FlexAccountDB(self.tmpdir)
     def tearDown(self):
-        repoPath = self.DB.getDataFilePath()
+        repoPath = self.DB._getDataFilePath()
         if os.path.exists(repoPath):
             os.remove(repoPath)
         os.rmdir(self.tmpdir)  

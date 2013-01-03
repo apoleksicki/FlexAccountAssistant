@@ -109,32 +109,31 @@ class FlexAccountDB(object):
     def __init__(self, dbfile=getDefaultPath(), fileName ='faa.dat'):
         self.dbfile = dbfile    
         self.fileName = fileName    
-    def getDataFilePath(self):
-        #print(os.path.join(self.dbfile, self.fileName))
+    def _getDataFilePath(self):
         return os.path.join(self.dbfile, self.fileName)
-    def getDataFile(self, mode = 'w'):
+    def _getDataFile(self, mode = 'w'):
         if not os.path.exists(self.dbfile):
             os.makedirs(self.dbfile)    
-        return open(self.getDataFilePath(), mode)
-    def udpateStatus(self, newValue):
-        pass
+        return open(self._getDataFilePath(), mode)
+    def updateStatus(self, newValue):
+        dataFile = self._getDataFile('w')
+        pickle.dump(newValue, dataFile, pickle.HIGHEST_PROTOCOL) 
     def readStatus(self):
-        pass
+        dataFile = self._getDataFile('r')
+        return pickle.load(dataFile)
     
 
 
 def init(dbase = FlexAccountDB(),  initial = None):
     '''Initializes the database.'''
-    dataFile = dbase.getDataFile('w')
-    
     if initial == None:
         initial = TimeCalculations(0, 0)
-    pickle.dump(initial, dataFile, pickle.HIGHEST_PROTOCOL) 
+    return dbase.updateStatus(initial)
+    
 
 def status(dbase = FlexAccountDB()):
     '''Returns the value of the flex account'''
-    dataFile = dbase.getDataFile('r')
-    return pickle.load(dataFile)
+    return dbase.readStatus()
     
 def add(toAdd, dbase = FlexAccountDB()):
     present = status(dbase)
