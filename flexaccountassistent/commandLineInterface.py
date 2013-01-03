@@ -8,10 +8,10 @@ import argparse, flexAccountAssistent as faa
 def timeCalcToString(toPrint):
     timeCalculations = toPrint.timeCalculations
     sign = ''
-    if (toPrint.sign == -1):
+    if (timeCalculations.sign == -1):
         sign = '-'
-    print 'Last modification: %s' (toPrint.modificationTimestamp)    
-    print '%s%2d:%2d' % (sign, timeCalculations.hours, timeCalculations.minutes)  
+    print 'Last modification: %s' % (toPrint.timestamp)    
+    print 'Status: %s%2d:%2d' % (sign, timeCalculations.hours, timeCalculations.minutes)  
 
 if __name__ == '__main__':
     CHOICES = ['init', 'status', 'add', 'subtract', 'adjust']

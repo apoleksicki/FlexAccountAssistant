@@ -4,7 +4,7 @@ This version of FlexAccountAssistent only registers the difference between worke
 the planned time.
 @author: Antek
 '''
-import os, pickle
+import os, pickle, datetime
 
 def timeCalculationsWithDifferentSign(timeCalculations):
     toReturn = TimeCalculations(timeCalculations.hours, timeCalculations.minutes)
@@ -74,6 +74,10 @@ class TimeCalculations(object):
         withChangedSign = TimeCalculations(toSubtract.hours, toSubtract.minutes, toSubtract.sign * -1)
         return self.add(withChangedSign)
 
+class Status(object):
+    def __init__(self, timeCalculations, timestamp= datetime.date.today()):
+        self.timeCalculations = timeCalculations
+        self.timestamp = timestamp
 
 def getSign(number):
     if number >= 0:
@@ -128,7 +132,7 @@ def init(dbase = FlexAccountDB(),  initial = None):
     '''Initializes the database.'''
     if initial == None:
         initial = TimeCalculations(0, 0)
-    return dbase.updateStatus(initial)
+    return dbase.updateStatus(Status(initial))
     
 
 def status(dbase = FlexAccountDB()):
@@ -137,4 +141,4 @@ def status(dbase = FlexAccountDB()):
     
 def add(toAdd, dbase = FlexAccountDB()):
     present = status(dbase)
-    init(dbase, present.add(toAdd))
+    init(dbase, present.timeCalculations.add(toAdd))

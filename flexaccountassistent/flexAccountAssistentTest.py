@@ -34,7 +34,7 @@ class AddTest(TestWithDBMock, unittest.TestCase):
     def _performTest(self, initial, toAdd, toCompare):
         init(self.DB, initial)
         add(toAdd, self.DB)
-        self.assertEqual(toCompare, status(self.DB))
+        self.assertEqual(toCompare, status(self.DB).timeCalculations)
 
     def test_add_with_positive_gives_correct_result(self):
         initial = TimeCalculations(2, 15)
@@ -54,7 +54,7 @@ class InterfaceFunctionTest(TestWithDBMock, unittest.TestCase):
     def test_status_returns_correct_value(self):
         toCompare = TimeCalculations(2, 15)
         init(self.DB, toCompare)
-        self.assertEqual(toCompare, status(self.DB))
+        self.assertEqual(toCompare, status(self.DB).timeCalculations)
         
 
     
