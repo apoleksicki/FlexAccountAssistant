@@ -5,14 +5,6 @@ Provides a console interface to deal with
 '''
 import argparse, flexAccountAssistent as faa
 
-#def timeCalcToString(toPrint):
-#    timeCalculations = toPrint.timeCalculations
-#    sign = ''
-#    if (timeCalculations.sign == -1):
-#        sign = '-'
-#    print 'Last modification: %s' % (toPrint.timestamp)    
-#    print 'Status: %s%2d:%2d' % (sign, timeCalculations.hours, timeCalculations.minutes)  
-
 if __name__ == '__main__':
     CHOICES = ['init', 'status', 'add', 'subtract', 'adjust']
     parser = argparse.ArgumentParser(description='Helps to follow changes on you flex account.')
