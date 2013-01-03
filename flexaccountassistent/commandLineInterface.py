@@ -4,8 +4,10 @@ Provides a console interface to deal with
 @author: Antek
 '''
 import argparse, flexAccountAssistent as faa
+import logging, os
 
 if __name__ == '__main__':
+    logging.basicConfig(filename=os.path.join(faa.getDefaultPath(), 'faa.log'),format='%(asctime)s %(message)s', level=logging.DEBUG)
     CHOICES = ['init', 'status', 'add', 'subtract', 'adjust']
     parser = argparse.ArgumentParser(description='Helps to follow changes on you flex account.')
     parser.add_argument('operation', choices=CHOICES)
