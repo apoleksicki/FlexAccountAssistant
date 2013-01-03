@@ -70,7 +70,7 @@ class TimeCalculations(object):
         sign = ''
         if (self.sign == -1):
             sign = '-'
-        return 'Status: %s%2d:%2d\n' % (sign, self.hours, self.minutes)  
+        return 'Status: %s%2d:%2d' % (sign, self.hours, self.minutes)  
             
             
     
@@ -83,7 +83,7 @@ class Status(object):
         self.timeCalculations = timeCalculations
         self.timestamp = timestamp
     def __str__(self):
-        return 'Last modification: %s\n' % (self.timestamp)    
+        return '%s\nLast modification: %s\n' % (self.timeCalculations, self.timestamp)    
 
 def getSign(number):
     if number >= 0:

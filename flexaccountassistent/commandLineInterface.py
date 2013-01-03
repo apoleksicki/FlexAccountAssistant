@@ -5,13 +5,13 @@ Provides a console interface to deal with
 '''
 import argparse, flexAccountAssistent as faa
 
-def timeCalcToString(toPrint):
-    timeCalculations = toPrint.timeCalculations
-    sign = ''
-    if (timeCalculations.sign == -1):
-        sign = '-'
-    print 'Last modification: %s' % (toPrint.timestamp)    
-    print 'Status: %s%2d:%2d' % (sign, timeCalculations.hours, timeCalculations.minutes)  
+#def timeCalcToString(toPrint):
+#    timeCalculations = toPrint.timeCalculations
+#    sign = ''
+#    if (timeCalculations.sign == -1):
+#        sign = '-'
+#    print 'Last modification: %s' % (toPrint.timestamp)    
+#    print 'Status: %s%2d:%2d' % (sign, timeCalculations.hours, timeCalculations.minutes)  
 
 if __name__ == '__main__':
     CHOICES = ['init', 'status', 'add', 'subtract', 'adjust']
@@ -32,7 +32,7 @@ if __name__ == '__main__':
         faa.init(initial=timeCalc)
     elif operation == CHOICES[1]:
         try:
-            timeCalcToString(faa.status())
+            print faa.status()
         except IOError:
             print "The flex account assistent hasn't been initialised. Please run init." 
     elif operation == CHOICES[2] or operation == CHOICES[3]:
