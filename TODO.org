@@ -7,8 +7,8 @@
 ** TODO Step two
 *** TODO Show an overview of the status in the last week/month
 
-* TODO Log
-** TODO Create a log of the changes
+* DONE Log
+** DONE Create a log of the changes
 
 * DONE Cleanup
 ** DONE Remove the old classes.
