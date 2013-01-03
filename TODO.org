@@ -12,6 +12,6 @@
 
 * DONE Cleanup
 ** DONE Remove the old classes.
-* TODO A clearer db interface
+* DONE A clearer db interface
 FlexAccountDB should not return a file. It should take and return an object, that is later on put into the db.
 
