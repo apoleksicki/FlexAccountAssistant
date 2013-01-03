@@ -1,6 +1,6 @@
 * TODO UI
 ** TODO Provide a better argument structure
-
+** TODO Create a shorter name for the command line interface 
 * TODO Timestamp showing
 ** DONE Step 1
 *** DONE Show the last date of the last modification
