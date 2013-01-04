@@ -3,7 +3,7 @@ Created on 11/07/2012
 Provides a console interface to deal with 
 @author: Antek
 '''
-import argparse, flexAccountAssistent as faa
+import argparse, flexAccountAssistant as faa
 import logging, os
 
 if __name__ == '__main__':

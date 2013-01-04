@@ -3,7 +3,7 @@ Created on 18/12/2012
 
 @author: Antek
 '''
-from flexaccountassistent.flexAccountAssistent import TimeCalculations,\
+from flexaccountassistant.flexAccountAssistant import TimeCalculations,\
     FlexAccountDB, init, add, status, createTimeCalculation
 import os.path
 import unittest
