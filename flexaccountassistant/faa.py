@@ -21,6 +21,9 @@ def sub(args):
     timeCalc = faa.createTimeCalculation(args.time)
     timeCalc = faa.timeCalculationsWithDifferentSign(timeCalc)
     faa.add(timeCalc)
+
+def setTime(args):
+    faa.init(initial=faa.createTimeCalculation(args.time))
     
 def _createParser():
     parser = argparse.ArgumentParser(description='Helps to follow changes on your flex account.')
@@ -38,6 +41,10 @@ def _createParser():
     subParser = subparsers.add_parser('sub',  help='Subtracts a value to your status.')
     subParser.set_defaults(func=sub)
     subParser.add_argument('time', help='Time you want to subtract in hh:mm format.')
+       
+    setParser = subparsers.add_parser('set',  help='Sets the status to the given value.')
+    setParser .set_defaults(func=setTime)
+    setParser .add_argument('time', help='Time you want to set in hh:mm format. Negative values have to be preceded by \'--\'. ')
        
     return parser
 
