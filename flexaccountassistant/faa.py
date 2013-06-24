@@ -49,7 +49,6 @@ def _createParser():
     return parser
 
 if __name__ == '__main__':
-    logging.basicConfig(filename=os.path.join(faa.getDefaultPath(), 'faa.log'),format='%(asctime)s %(message)s', level=logging.DEBUG)
     args = _createParser().parse_args()
     args.func(args)
 

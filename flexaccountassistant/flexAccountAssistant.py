@@ -132,10 +132,21 @@ class FlexAccountDB(object):
         dataFile = self._getDataFile('r')
         return pickle.load(dataFile)
     
+def _initLog():
+    pathToLogFile = os.path.join(getDefaultPath(), 'faa.log')
+    if not os.path.exists(pathToLogFile):
+        os.makedirs(pathToLogFile)
 
+    f = file(pathToLogFile, 'w')
+    f.close()
+    
+    logging.basicConfig(filename=os.path.join(getDefaultPath(), 'faa.log'),format='%(asctime)s %(message)s', level=logging.DEBUG)
+
+    
 
 def init(dbase = FlexAccountDB(),  initial = None):
     '''Initializes the database.'''
+    _initLog()
     if initial == None:
         initial = TimeCalculations(0, 0)
     logging.info('New value: %s', initial)
